@@ -1,12 +1,10 @@
-package com.zkyne.zkynenetty.chapter1;
+package com.zkyne.zkynenetty.chapter2;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringEncoder;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -24,12 +22,13 @@ public class NettyClient {
     public static void main(String[] args) throws InterruptedException {
         Bootstrap bootstrap = new Bootstrap();
         NioEventLoopGroup executors = new NioEventLoopGroup();
-        bootstrap.group(executors)
+        bootstrap
+                .group(executors)
                 .channel(NioSocketChannel.class)
                 .handler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel channel) throws Exception {
-                        channel.pipeline().addLast(new StringEncoder());
+                        channel.pipeline().addLast(new FirstClientHandler());
                     }
                 });
         connect(bootstrap, "127.0.0.1", 8000, MAX_RETRY);
@@ -39,11 +38,6 @@ public class NettyClient {
         bootstrap.connect(host, port).addListener(future -> {
             if (future.isSuccess()) {
                 System.out.println("连接成功!");
-                Channel channel = ((ChannelFuture) future).channel();
-                while (true) {
-                    channel.writeAndFlush(new Date() + ": hello netty");
-                    TimeUnit.SECONDS.sleep(2);
-                }
             } else if (retry == 0) {
                 System.err.println("重试次数已用完，放弃连接！");
             } else {
