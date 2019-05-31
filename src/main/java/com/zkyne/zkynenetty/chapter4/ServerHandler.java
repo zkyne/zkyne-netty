@@ -26,6 +26,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         BasePacket basePacket = packetCodec.decode(byteBuf);
         LoginResponsePacket loginResponsePacket = new LoginResponsePacket();
         loginResponsePacket.setVersion(basePacket.getVersion());
+        // 4.响应客户端
+        ByteBuf responseByteBuf = null;
         if(basePacket instanceof LoginPacket){
             LoginPacket loginPacket = (LoginPacket) basePacket;
             //  3.处理登录逻辑
@@ -40,10 +42,16 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
                 loginResponsePacket.setMessage("Login failure:用户名或密码有误");
                 System.out.println(new Date() + ": 登录失败!");
             }
+            // 4.响应客户端
+            responseByteBuf = packetCodec.encode(ctx.alloc(), loginResponsePacket);
+        }else if (basePacket instanceof ChatPacket) {
+            // 聊天消息
+            ChatPacket chatPacket = ((ChatPacket) basePacket);
+            System.out.println(new Date() + ": 收到客户端消息: " + chatPacket.getMessage());
+            chatPacket.setMessage("服务端回复【" + chatPacket.getMessage() + "】");
+            responseByteBuf = packetCodec.encode(ctx.alloc(), chatPacket);
         }
         byteBuf.release();
-        // 4.响应客户端
-        ByteBuf responseByteBuf = packetCodec.encode(ctx.alloc(), loginResponsePacket);
         ctx.channel().writeAndFlush(responseByteBuf);
     }
 

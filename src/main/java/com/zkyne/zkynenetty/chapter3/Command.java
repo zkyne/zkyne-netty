@@ -9,4 +9,5 @@ package com.zkyne.zkynenetty.chapter3;
 public interface Command {
    byte LOGIN_REQUEST = 1;
    byte LOGIN_RESPONCE = -1;
+   byte CHAT = 0;
 }

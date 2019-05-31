@@ -3,6 +3,7 @@ package com.zkyne.zkynenetty.chapter3;
 import com.google.common.collect.Maps;
 import com.zkyne.zkynenetty.chapter3.packet.LoginPacket;
 import com.zkyne.zkynenetty.chapter4.LoginResponsePacket;
+import com.zkyne.zkynenetty.chapter4.ChatPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
@@ -24,6 +25,7 @@ public class PacketCodec {
         PACKET_TYPE_MAP = Maps.newHashMap();
         PACKET_TYPE_MAP.put(Command.LOGIN_REQUEST, LoginPacket.class);
         PACKET_TYPE_MAP.put(Command.LOGIN_RESPONCE, LoginResponsePacket.class);
+        PACKET_TYPE_MAP.put(Command.CHAT, ChatPacket.class);
         SERIALIZER_MAP = Maps.newHashMap();
         SERIALIZER_MAP.put(Serializer.DEFAULT_SERIALIZER.getSerializerAlgorithm(), Serializer.DEFAULT_SERIALIZER);
     }

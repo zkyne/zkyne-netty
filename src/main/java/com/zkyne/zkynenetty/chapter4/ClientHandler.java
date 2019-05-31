@@ -50,10 +50,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter{
         if (basePacket instanceof LoginResponsePacket) {
             LoginResponsePacket loginResponsePacket = (LoginResponsePacket) basePacket;
             if (loginResponsePacket.getCode() == 200) {
+                LoginUtil.markAsLogin(ctx.channel());
                 System.out.println(new Date() + ": 客户端登录成功");
             } else {
                 System.out.println(new Date() + ": 客户端登录失败，原因：" + loginResponsePacket.getMessage());
             }
+        }else if(basePacket instanceof ChatPacket){
+            ChatPacket chatPacket = (ChatPacket) basePacket;
+            System.out.println(new Date() + ": 收到服务端的消息: " + chatPacket.getMessage());
         }
         byteBuf.release();
     }
